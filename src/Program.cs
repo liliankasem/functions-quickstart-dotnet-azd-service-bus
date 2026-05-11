@@ -8,12 +8,18 @@ using OpenTelemetry;
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
     .ConfigureServices(services => {
+#if DEBUG
         if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING")))
         {
             services.AddOpenTelemetry()
                 .UseFunctionsWorkerDefaults()
                 .UseAzureMonitorExporter();
         }
+#else
+        services.AddOpenTelemetry()
+            .UseFunctionsWorkerDefaults()
+            .UseAzureMonitorExporter();
+#endif
     })
     .Build();
 
